@@ -51,13 +51,15 @@ fn main() {
         gl.clear_color(255, 255, 255,1)
         gl.clear()
 
-        shader.use()
         gl.bind_vao(vbo)
+        shader.use()
+
 
         gl.draw_arrays(C.GL_TRIANGLES, 0, 3)
 
         window.swap_buffers()
         glfw.poll_events()
+
         time.sleep_ms(100)
     }
 }
