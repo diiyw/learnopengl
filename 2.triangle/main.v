@@ -11,7 +11,7 @@ fn main() {
     win_cfg := glfw.WinCfg{
           width:500,
           height:500,
-          title:'trangle',
+          title:'triangle',
     }
 
     window := glfw.create_window(win_cfg)
