@@ -22,7 +22,7 @@ fn main() {
 
     gl.viewport(0,0,500,500)
 
-    shader := gl.new_shader('text')
+    shader := gl.new_shader('main')
 
     vertices := [
             -0.5, -0.5, 0.0, // left
@@ -32,17 +32,16 @@ fn main() {
 
     vbo := gl.gen_buffer()
 
+    vao := gl.gen_vertex_array()
+
     gl.bind_vao(vbo)
 
     gl.bind_buffer(C.GL_ARRAY_BUFFER,vbo)
-
-    gl.buffer_data(C.GL_ARRAY_BUFFER,vertices.len,&vertices,C.GL_STATIC_DRAW)
-
-    gl.vertex_attrib_pointer(0,3,C.GL_FLOAT,false,0,0)
-
+    gl.buffer_data(C.GL_ARRAY_BUFFER,vertices.len * 4,vertices,C.GL_STATIC_DRAW)
+    gl.vertex_attrib_pointer(0,3,C.GL_FLOAT,false,3,0)
     gl.enable_vertex_attrib_array(0)
 
-    gl.bind_buffer(C.GL_ARRAY_BUFFER,vbo)
+    gl.bind_buffer(C.GL_ARRAY_BUFFER,u32(0))
 
     gl.bind_vao(u32(0))
 
@@ -51,9 +50,8 @@ fn main() {
         gl.clear_color(255, 255, 255,1)
         gl.clear()
 
-        gl.bind_vao(vbo)
         shader.use()
-
+        gl.bind_vao(vao)
 
         gl.draw_arrays(C.GL_TRIANGLES, 0, 3)
 
