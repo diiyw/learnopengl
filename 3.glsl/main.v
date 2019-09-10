@@ -2,6 +2,7 @@ import (
     gl
     glfw
     time
+    math
 )
 
 fn main() {
@@ -12,7 +13,6 @@ fn main() {
           width:500,
           height:500,
           title:'triangle',
-          borderless:true,
     }
 
     window := glfw.create_window(win_cfg)
@@ -52,6 +52,12 @@ fn main() {
         gl.clear()
 
         shader.use()
+
+        t := glfw.get_time()
+        green_value := math.sin(t)/ 2.0 + 0.5
+        location := shader.uni_location('ourColor')
+        C.glUniform4f(location, 0.0, green_value, 0.0, 1.0)
+
         gl.bind_vao(vao)
 
         gl.draw_arrays(C.GL_TRIANGLES, 0, 3)
