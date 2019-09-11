@@ -12,7 +12,7 @@ fn main() {
     win_cfg := glfw.WinCfg{
           width:500,
           height:500,
-          title:'triangle',
+          title:'shader',
     }
 
     window := glfw.create_window(win_cfg)
