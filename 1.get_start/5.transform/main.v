@@ -109,13 +109,13 @@ fn main() {
         gl.active_texture(C.GL_TEXTURE1)
         gl.bind_2d_texture(texture2)
 
-         // create transformations
-         f := f32(1.0)
-          transform := glm.Mat4 {
-            data:&f,
-         }
-        // transform = glm.translate(transform,glm.vec3(0.5, -0.5, 0.0))
-        // transform = glm.rotate_z(transform, 0.5)
+        // create transformations
+        zero := f32(1)
+        mut transform := glm.Mat4 {
+           data:&zero,
+        }
+        transform = glm.translate(transform,glm.vec3(0.5, -0.5, 0.0))
+        transform = glm.rotate_z(transform, 0.5)
 
         // render container
         shader.use()
