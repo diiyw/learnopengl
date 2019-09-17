@@ -12,9 +12,9 @@ fn main() {
     glfw.init()
 
     win_cfg := glfw.WinCfg{
-          width:500,
-          height:500,
-          title:'transform',
+          width:800,
+          height:600,
+          title:'coordination',
     }
 
     window := glfw.create_window(win_cfg)
@@ -23,7 +23,7 @@ fn main() {
 
     gl.init_glad()
 
-    gl.viewport(0,0,500,500)
+    gl.viewport(0,0,800,600)
 
     shader := gl.new_shader('main')
 
@@ -110,14 +110,20 @@ fn main() {
         gl.bind_2d_texture(texture2)
 
         // create transformations
-        mut transform := glm.identity()
-        transform = glm.translate(transform,glm.vec3(0.5, -0.5, 0.0))
-        transform = glm.rotate_z(transform, 0.5 * glfw.get_time())
+        mut model := glm.identity()
+        mut view := glm.identity()
+        mut projection := glm.identity()
+
+        model = glm.rotate_x(model, 0)
+        view = glm.translate(view,glm.vec3(0, 0, -3.0))
+        projection = glm.perspective(45, 800.0/600.0, 0.1, 100.0)
 
         // render container
         shader.use()
 
-        shader.set_mat4('transform',transform)
+        shader.set_mat4('model',model)
+        shader.set_mat4('view',view)
+        shader.set_mat4('projection',projection)
 
         gl.bind_vao(vao)
         gl.draw_elements(C.GL_TRIANGLES,6,C.GL_UNSIGNED_INT,0)
