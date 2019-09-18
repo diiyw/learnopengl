@@ -112,7 +112,7 @@ fn main() {
         // create transformations
         mut transform := glm.identity()
         transform = glm.translate(transform,glm.vec3(0.5, -0.5, 0.0))
-        transform = glm.rotate_z(transform, 0.5 * glfw.get_time())
+        transform = glm.rotate(transform, 0.5 * glfw.get_time(),glm.vec3(0.0,0.0,1.0))
 
         // render container
         shader.use()

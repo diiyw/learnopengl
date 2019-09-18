@@ -25,19 +25,70 @@ fn main() {
 
     gl.viewport(0,0,800,600)
 
+    gl.enable(C.GL_DEPTH_TEST)
+
     shader := gl.new_shader('main')
 
     vertices := [
-           // positions      // texture coords
-           0.5,  0.5, 0.0,  1.0, 1.0, // top right
-           0.5, -0.5, 0.0,  1.0, 0.0, // bottom right
-          -0.5, -0.5, 0.0,  0.0, 0.0, // bottom let
-          -0.5,  0.5, 0.0,  0.0, 1.0  // top let
+         -0.5, -0.5, -0.5,  0.0, 0.0,
+         0.5, -0.5, -0.5,  1.0, 0.0,
+         0.5,  0.5, -0.5,  1.0, 1.0,
+         0.5,  0.5, -0.5,  1.0, 1.0,
+         -0.5,  0.5, -0.5,  0.0, 1.0,
+         -0.5, -0.5, -0.5,  0.0, 0.0,
+
+         -0.5, -0.5,  0.5,  0.0, 0.0,
+         0.5, -0.5,  0.5,  1.0, 0.0,
+         0.5,  0.5,  0.5,  1.0, 1.0,
+         0.5,  0.5,  0.5,  1.0, 1.0,
+         -0.5,  0.5,  0.5,  0.0, 1.0,
+         -0.5, -0.5,  0.5,  0.0, 0.0,
+
+         -0.5,  0.5,  0.5,  1.0, 0.0,
+         -0.5,  0.5, -0.5,  1.0, 1.0,
+         -0.5, -0.5, -0.5,  0.0, 1.0,
+         -0.5, -0.5, -0.5,  0.0, 1.0,
+         -0.5, -0.5,  0.5,  0.0, 0.0,
+         -0.5,  0.5,  0.5,  1.0, 0.0,
+
+         0.5,  0.5,  0.5,  1.0, 0.0,
+         0.5,  0.5, -0.5,  1.0, 1.0,
+         0.5, -0.5, -0.5,  0.0, 1.0,
+         0.5, -0.5, -0.5,  0.0, 1.0,
+         0.5, -0.5,  0.5,  0.0, 0.0,
+         0.5,  0.5,  0.5,  1.0, 0.0,
+
+         -0.5, -0.5, -0.5,  0.0, 1.0,
+         0.5, -0.5, -0.5,  1.0, 1.0,
+         0.5, -0.5,  0.5,  1.0, 0.0,
+         0.5, -0.5,  0.5,  1.0, 0.0,
+         -0.5, -0.5,  0.5,  0.0, 0.0,
+         -0.5, -0.5, -0.5,  0.0, 1.0,
+
+         -0.5,  0.5, -0.5,  0.0, 1.0,
+         0.5,  0.5, -0.5,  1.0, 1.0,
+         0.5,  0.5,  0.5,  1.0, 0.0,
+         0.5,  0.5,  0.5,  1.0, 0.0,
+         -0.5,  0.5,  0.5,  0.0, 0.0,
+         -0.5,  0.5, -0.5,  0.0, 1.0
     ]
 
     indices := [
         0, 1, 3, // first triangle
         1, 2, 3  // second triangle
+    ]
+
+    cube_positions := [
+      glm.vec3( 0.0,  0.0,  0.0),
+      glm.vec3( 2.0,  5.0, -15.0),
+      glm.vec3(-1.5, -2.2, -2.5),
+      glm.vec3(-3.8, -2.0, -12.3),
+      glm.vec3( 2.4, -0.4, -3.5),
+      glm.vec3(-1.7,  3.0, -7.5),
+      glm.vec3( 1.3, -2.0, -2.5),
+      glm.vec3( 1.5,  2.0, -2.5),
+      glm.vec3( 1.5,  0.2, -1.5),
+      glm.vec3(-1.3,  1.0, -1.5)
     ]
 
     vbo := gl.gen_buffer()
@@ -110,23 +161,29 @@ fn main() {
         gl.bind_2d_texture(texture2)
 
         // create transformations
-        mut model := glm.identity()
         mut view := glm.identity()
         mut projection := glm.identity()
 
-        model = glm.rotate(model,-45,glm.vec3(1.0,0.0,0.0))
         view = glm.translate(view,glm.vec3(0, 0, -3.0))
         projection = glm.perspective(45, 800.0/600.0, 0.1, 100.0)
 
         // render container
         shader.use()
 
-        shader.set_mat4('model',model)
         shader.set_mat4('view',view)
         shader.set_mat4('projection',projection)
 
         gl.bind_vao(vao)
-        gl.draw_elements(C.GL_TRIANGLES,6,C.GL_UNSIGNED_INT,0)
+
+        for i := 0; i < 10; i++ {
+          mut model := glm.identity()
+          model = glm.translate(model, cube_positions[i])
+          angle := 20.0 * f32(i)
+          model = glm.rotate(model,angle, glm.vec3(1.0, 0.3, 0.5))
+          shader.set_mat4('model',model)
+
+          gl.draw_arrays(C.GL_TRIANGLES,0,36)
+        }
 
         window.swap_buffers()
         glfw.poll_events()
